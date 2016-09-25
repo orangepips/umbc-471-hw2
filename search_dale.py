@@ -39,14 +39,15 @@ def breadth_first_search(nodes, edges, start_node, end_node):
 
 
 def depth_first_search(graph, start_node, end_node, path=[]):
+    # print(graph)
     stack = [start_node]
     visited = []
     while stack:
         vertex = stack.pop()
 
         while vertex not in visited:
-            # exclude terminal nodes if not the end node
-            if (vertex not in graph and not vertex == end_node):
+            # exclude terminal nodes if not the end node go to the next item in the stack
+            if (vertex not in graph and vertex != end_node):
                 vertex = stack.pop()
                 if vertex == None:
                     break
@@ -60,6 +61,15 @@ def depth_first_search(graph, start_node, end_node, path=[]):
             return visited
 
     return None
+
+def calc_path_cost(path):
+    cost = 0
+    for idx, val in enumerate(path):
+        if (idx+1 > len(path) - 1):
+            break
+        next = path[idx+1]
+        cost = cost + graph[val].get(next)
+    return cost
 
 def uniform_cost_search(nodes, edges, start_node, end_node):
     pass
@@ -141,7 +151,15 @@ if __name__ == "__main__":
         print("Invalid algorithm identifier '%s'" % algorithm)
         exit(0)
 
-    print(path)
+    cost = calc_path_cost(path)
+    new_line_path = "\n".join(path)
+    # print(new_line_path)
+    # print(cost)
+
+    output.write(new_line_path)
+    output.write("\n" + str(cost))
+
+
 
     # Check if a valid path was returned. If it was, write the path contents and compute the cost of the path
     if not path:
