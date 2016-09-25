@@ -108,8 +108,20 @@ def uniform_cost_search(graph, start_node, end_node):
     return None
 
 
-def greedy_search(nodes, edges, start_node, end_node, heuristic_values):
-    pass
+def greedy_search(graph, start_node, end_node, heuristic_values):
+    # http://centurion2.com/AIHomework/AI260/ai260.php
+    q = queue.PriorityQueue()
+    q.put( (heuristic_values[start_node], [start_node]) )
+    while q:
+        (path_cost, path) = q.get()
+        path_end = path[-1]
+        if path_end == end_node:
+            return path
+        for neighbor, edge_weight in sorted(graph[path_end].items(), reverse=True):
+            path_with_neighbor = list(path)
+            path_with_neighbor.append(neighbor)
+            q.put( (heuristic_values[neighbor], path_with_neighbor) )
+    return None
 
 
 def astar_search(graph, start_node, end_node, heuristic_values):
@@ -253,7 +265,7 @@ if __name__ == "__main__":
         path = uniform_cost_search(graph, start_node, end_node)
 
     elif algorithm == "greedy":
-        path = greedy_search(nodes, edges, start_node, end_node, heuristic_values)
+        path = greedy_search(graph, start_node, end_node, heuristic_values)
 
     elif algorithm == "astar":
         path = astar_search(graph, start_node, end_node, heuristic_values)
