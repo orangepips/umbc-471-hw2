@@ -93,8 +93,19 @@ def calc_path_cost(path):
         cost = cost + graph[val].get(next)
     return cost
 
-def uniform_cost_search(nodes, edges, start_node, end_node):
-    pass
+def uniform_cost_search(graph, start_node, end_node):
+    q = queue.PriorityQueue()
+    q.put( (0, [start_node]) )
+    while q:
+        (path_cost, path) = q.get()
+        path_end = path[-1]
+        if path_end == end_node:
+            return path
+        for neighbor, edge_weight in sorted(graph[path_end].items(), reverse=True):
+            path_with_neighbor = list(path)
+            path_with_neighbor.append(neighbor)
+            q.put( ( path_cost + edge_weight, path_with_neighbor) )
+    return None
 
 
 def greedy_search(nodes, edges, start_node, end_node, heuristic_values):
@@ -111,7 +122,7 @@ def astar_search(graph, start_node, end_node, heuristic_values):
     def get_current():
         pq = queue.PriorityQueue()
         for node in openSet:
-            pq.put((fScore[node], node))
+            pq.put( (fScore[node], node) )
 
         return pq.get()[1]
 
@@ -222,8 +233,6 @@ if __name__ == "__main__":
     edges = read_edge_file(edge_file)
     heuristic_values = read_heuristics_file(heuristics_file)
 
-    print(heuristic_values)
-
     graph = createGraph(edge_file)
 
     # print (graph)
@@ -241,7 +250,7 @@ if __name__ == "__main__":
         path = depth_first_search(graph, start_node, end_node)
 
     elif algorithm == "uniform":
-        path = uniform_cost_search(nodes, edges, start_node, end_node)
+        path = uniform_cost_search(graph, start_node, end_node)
 
     elif algorithm == "greedy":
         path = greedy_search(nodes, edges, start_node, end_node, heuristic_values)
